@@ -9,7 +9,7 @@ $dbname = "pms";
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-echo "connection was successful";
+// echo "connection was successful";
                       
 // Check connection
 if ($conn->connect_error) {
@@ -17,7 +17,7 @@ if ($conn->connect_error) {
 }
 
 // Fetch supplier information
-$sql = "SELECT * FROM supplier"; // Modify the query to suit your database schema
+$sql = "SELECT * FROM supplier"; 
 $result = $conn->query($sql);
 
 // Check if query was successful
@@ -98,67 +98,6 @@ if ($result === false) {
                   // Close database connection
                   $conn->close();
                   ?>
-                  <!-- <tr>
-                          <td>Supplier 1</td>
-                          <td>+6392978376192</td>
-                          <td>supplier1@gmail.com</td>
-                          <td>456 Boni Av. Mandaluyong, Metro Manila</td>
-                          <td>
-                              <a class="btn btn-sm btn-success text-white"><i class="fa fa-edit"></i> edit</a>
-                              <a class="btn btn-sm btn-danger text-white"><i class="fa fa-trash"></i> delete</a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Supplier 1</td>
-                          <td>+6392978376192</td>
-                          <td>supplier1@gmail.com</td>
-                          <td>456 Boni Av. Mandaluyong, Metro Manila</td>
-                          <td>
-                              <a class="btn btn-sm btn-success text-white"><i class="fa fa-edit"></i> edit</a>
-                              <a class="btn btn-sm btn-danger text-white"><i class="fa fa-trash"></i> delete</a>
-                          </td>
-                        </tr>
-                        <tr>
-                        <tr>
-                          <td>Supplier 2</td>
-                          <td>+6396748976521</td>
-                          <td>supplier2@gmail.com</td>
-                          <td>456 Pioneer St. Pasig, Metro Manila</td>
-                          <td>
-                              <a class="btn btn-sm btn-success text-white"><i class="fa fa-edit"></i> edit</a>
-                              <a class="btn btn-sm btn-danger text-white"><i class="fa fa-trash"></i> delete</a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Supplier 3</td>
-                          <td>+6399876876432</td>
-                          <td>supplier3@gmail.com</td>
-                          <td>463 Boni Av. Mandaluyong, Metro Manila</td>
-                          <td>
-                              <a class="btn btn-sm btn-success text-white"><i class="fa fa-edit"></i> edit</a>
-                              <a class="btn btn-sm btn-danger text-white"><i class="fa fa-trash"></i> delete</a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Supplier 4</td>
-                          <td>+6395643654781</td>
-                          <td>supplier4@gmail.com</td>
-                          <td>875 Pembo Makati, Metro Manila</td>
-                          <td>
-                              <a class="btn btn-sm btn-success text-white"><i class="fa fa-edit"></i> edit</a>
-                              <a class="btn btn-sm btn-danger text-white"><i class="fa fa-trash"></i> delete</a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Supplier 5</td>
-                          <td>+6398974542342</td>
-                          <td>supplier5@gmail.com</td>
-                          <td>25 St. BGC, Metro Manila</td>
-                          <td>
-                              <a class="btn btn-sm btn-success text-white"><i class="fa fa-edit"></i> edit</a>
-                              <a class="btn btn-sm btn-danger text-white"><i class="fa fa-trash"></i> delete</a>
-                          </td>
-                        </tr> -->
                 </tbody>
               </table>
             </div>

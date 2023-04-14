@@ -1,3 +1,22 @@
+<?php
+extract($_POST);
+
+
+$conn = new mysqli('localhost', 'root', '', 'pms');
+echo "ssds";
+if ($conn->connect_error) {
+  echo ('connection failed : ' . $conn->connect_error);
+} else {
+  $stmt = $conn->prepare("insert into medicine (ID, Name, Quantity, Unit_Price, Expiration_Date) VALUES (?,?, ?, ?, ?)");
+
+  $stmt->bind_param("isiii", $ID, $Name, $Quantity, $Unit_Price, $Expiration_date);
+  $stmt->execute();
+
+  $stmt->close();
+  $conn->close();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <?php include 'include/header.php';?>
@@ -27,13 +46,13 @@
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
-                  <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                  <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" method="post">
                   <div class="row">
-                  <div class="col-md-4 col-sm-4">
+                  <!-- <div class="col-md-4 col-sm-4">
                     <input type="text" class="form-control has-feedback-left" placeholder="Medicine Code">
                     <span class="fa fa-medkit form-control-feedback left" aria-hidden="true"></span>
-                  </div>
-                  <div class="col-md-4 col-sm-4">
+                  </div> -->
+                  <!-- <div class="col-md-4 col-sm-4">
                   <select class="form-control">
                             <option>Select Category</option>
                             <option>Antimalarials</option>
@@ -49,10 +68,10 @@
                             <option>Supplier 2</option>
                             <option>Supplier 3</option>
                             <option>Supplier 4</option>
-                          </select>
-                  </div><br><br><br>
+                          </select> -->
+                  <!-- </div><br><br><br> -->
                   <div class="col-md-12 col-sm-12">
-                    <input type="text" class="form-control has-feedback-left" placeholder="Medicine Name">
+                    <input type="text" class="form-control has-feedback-left" placeholder=" ID" name="ID">
                     <span class="fa fa-medkit form-control-feedback left" aria-hidden="true"></span>
                   </div><br><br><br>
                   <div class="col-md-12 col-sm-12">
@@ -60,22 +79,22 @@
                   </div><br><br><br><br>
                   
                   <div class="col-md-4 col-sm-4">
-                    <input type="text" class="form-control has-feedback-left" placeholder="Generic Name">
+                    <input type="text" class="form-control has-feedback-left" placeholder="Name" name="Name">
                     <span class="fa fa-medkit form-control-feedback left" aria-hidden="true"></span>
                   </div>
                   <div class="col-md-4 col-sm-4">
-                    <input type="text" class="form-control has-feedback-left" placeholder="Purchase Price">
+                    <input type="text" class="form-control has-feedback-left" placeholder="Quantity" name="Quantity">
                     <span class="fa fa-dollar form-control-feedback left" aria-hidden="true"></span>
                   </div>
                   <div class="col-md-4 col-sm-4">
-                    <input type="text" class="form-control has-feedback-left" placeholder="Retail Price">
+                    <input type="text" class="form-control has-feedback-left" placeholder="Unit_Price" name="Unit_Price">
                     <span class="fa fa-dollar form-control-feedback left" aria-hidden="true"></span>
                   </div><br><br><br>
                   <div class="col-md-4 col-sm-4">
-                    <input type="text" class="form-control has-feedback-left" placeholder="Quantity">
+                    <input type="text" class="form-control has-feedback-left" placeholder="Expiration_Date" name="Expiration_Date">
                     <span class="fa fa-hourglass-o form-control-feedback left" aria-hidden="true"></span>
                   </div>
-                  <div class="col-md-4 col-sm-4">
+                  <!-- <div class="col-md-4 col-sm-4">
                     <input type="text" class="form-control has-feedback-left" placeholder="Unit">
                     <span class="fa fa-balance-scale form-control-feedback left" aria-hidden="true"></span>
                   </div>
@@ -86,7 +105,9 @@
                   <div class="col-md-12 col-sm-12">
                     <input type="file" class="form-control has-feedback-left" placeholder="Retail Price">
                     <span class="fa fa-image form-control-feedback left" aria-hidden="true"></span>
-                  </div><br><br><br>
+                  </div><br><br><br> -->
+
+
                   <div class="col-md-12 col-sm-12 ">
                       <button class="btn btn-primary" type="button">Cancel</button>
                       <button type="submit" class="btn btn-success">Submit</button>
