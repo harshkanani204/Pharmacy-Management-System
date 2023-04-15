@@ -1,5 +1,6 @@
 <!-- PHP code to fetch supplier information -->
 <?php
+
 // Database connection parameters
 $servername = "localhost";
 $username = "root";

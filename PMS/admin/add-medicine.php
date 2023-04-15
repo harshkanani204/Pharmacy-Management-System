@@ -46,7 +46,7 @@ if ($conn->connect_error) {
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
-                  <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" method="post">
+                  <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" method="post" action="medicine.php">
                   <div class="row">
                   <!-- <div class="col-md-4 col-sm-4">
                     <input type="text" class="form-control has-feedback-left" placeholder="Medicine Code">

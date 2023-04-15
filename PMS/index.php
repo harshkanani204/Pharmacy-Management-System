@@ -92,13 +92,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <div class="item form-group">
                 <div class="col-md-12 col-sm-12">
                   <center>
-                    <input class="btn" value="login " type="submit" style="background-color: rgb(22, 104, 122);color: rgb(192, 202, 211);">
-                  
-                  <select name="role" id="role" style="background-color: rgb(22, 104, 122);color: rgb(192, 202, 211); padding: 10px 12px; border-radius: 3px; margin:0px 5px 5px 0px;">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="role" id="role" value="admin">
+                      <label class="form-check-label" for="admin">
+                        Admin
+                      </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="role" id="role" value="cashier">
+                      <label class="form-check-label" for="flexRadioDefault2">
+                        Cashier
+                      </label>
+                    </div>
+                    </center>
+                    <center>
+                    <input class="btn" value="login " type="submit" style="background-color: rgb(22, 104, 122);color: rgb(192, 202, 211); margin-top:5px;">
+
+                    <!-- <select name="role" id="role" style="background-color: rgb(22, 104, 122);color: rgb(192, 202, 211); padding: 10px 12px; border-radius: 3px; margin:0px 5px 5px 0px;">
                       <option value="admin">Admin</option>
                       <option value="cashier">Cashier</option>
-                    </select>
-                    </center>
+                    </select> -->
+                  </center>
                 </div>
               </div>
 
