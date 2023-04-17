@@ -1,3 +1,30 @@
+<!-- PHP code to fetch supplier information -->
+<?php
+// Database connection parameters
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "pms";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// echo "connection was successful";
+                      
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Fetch supplier information
+$sql = "SELECT * FROM medicine"; 
+$result = $conn->query($sql);
+
+// Check if query was successful
+if ($result === false) {
+    die("Error: " . $conn->error);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <?php include 'include/header.php';?>
@@ -35,20 +62,45 @@
                   <table id="datatable" class="table table-striped table-bordered" style="width:100%">
                       <thead>
                         <tr>
-                          <th>Medicine Code</th>
-                          <th>Image</th>
+                          <th> ID</th>
                           <th>Name</th>
-                          <th>Purchase Price</th>
-                          <th>Retail Price</th>
                           <th>Quantity</th>
-                          <th>Unit</th>
+                          <th>Unit_Price</th>
+                          <th>Expiration_Date</th>
                           <th>Action</th>
                         </tr>
                       </thead>
 
 
                       <tbody>
-                        <tr>
+                        <?php
+                          if ($result->num_rows > 0) {
+                    // Output data of each row
+                    while ($row = $result->fetch_assoc()) {
+                      echo "<tr>";
+                      echo "<td>" . $row["ID"] . "</td>";
+                      echo "<td>" . $row["Name"] . "</td>";
+                      echo "<td>" . $row["Quantity"] . "</td>";
+                      echo "<td>" . $row["Unit_Price"] . "</td>";
+                      echo "<td>" . $row["Expiration_Date"] . "</td>";
+                      echo '<td>
+                              <a class="btn btn-sm btn-info text-white"><i class="fa fa-eye"></i> details</a>
+                              <a class="btn btn-sm btn-success text-white"><i class="fa fa-edit"></i> edit</a>
+                              <a class="btn btn-sm btn-danger text-white"><i class="fa fa-trash"></i> delete</a>
+                          </td>';
+
+                      echo "</tr>";
+                    }
+                  } else {
+                    echo "<tr><td colspan='5'>0 results</td></tr>";
+                  }
+
+                  // Close database connection
+                  $conn->close();
+                  ?>
+                        </tr>
+
+                        <!-- <tr>
                           <td>MDCN-101</td>
                           <td><img src="images/alaxan.png" width="50" style="border-radius:10px" alt="Image"></td>
                           <td>Tuseran</td>
@@ -116,7 +168,7 @@
                               <a class="btn btn-sm btn-info text-white"><i class="fa fa-eye"></i> details</a>
                               <a class="btn btn-sm btn-success text-white"><i class="fa fa-edit"></i> edit</a>
                               <a class="btn btn-sm btn-danger text-white"><i class="fa fa-trash"></i> delete</a>
-                          </td>
+                          </td> -->
                         </tr>
                       </tbody>
                     </table>

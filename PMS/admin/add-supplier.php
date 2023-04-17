@@ -3,7 +3,7 @@ extract($_POST);
 
 
 $conn = new mysqli('localhost', 'root', '', 'pms');
-echo "ssds";
+// echo "ssds";
 if ($conn->connect_error) {
   echo ('connection failed : ' . $conn->connect_error);
 } else {
@@ -14,7 +14,7 @@ if ($conn->connect_error) {
 
   $stmt->close();
   $conn->close();
-}
+} 
 ?>
 
 <!DOCTYPE html>
