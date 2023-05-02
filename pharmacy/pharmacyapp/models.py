@@ -38,7 +38,7 @@ class Drug(models.Model):
     drugname = models.CharField(max_length=255, blank=True, null=True)
     drugdescription = models.CharField(max_length=255, blank=True, null=True)
     drugcategory = models.CharField(max_length=255, blank=True, null=True)
-    companyid = models.ForeignKey(Company, on_delete= models.CASCADE, db_column='companyid', blank=True, null=True)
+    companyid = models.ForeignKey(Company, models.DO_NOTHING, db_column='companyid', blank=True, null=True)
 
     class Meta:
         # managed = False
@@ -47,7 +47,7 @@ class Drug(models.Model):
 
 class Drugexpiry(models.Model):
     drugexpiryid = models.AutoField(primary_key=True)
-    drugid = models.ForeignKey(Drug, on_delete= models.CASCADE, db_column='drugid', blank=True, null=True)
+    drugid = models.ForeignKey(Drug, models.DO_NOTHING, db_column='drugid', blank=True, null=True)
     expirydate = models.DateField(blank=True, null=True)
 
     class Meta:
@@ -71,9 +71,9 @@ class Employee(models.Model):
 
 class Inventory(models.Model):
     inventoryid = models.AutoField(primary_key=True)
-    drugid = models.ForeignKey(Drug, on_delete= models.CASCADE, db_column='drugid', blank=True, null=True)
-    supplierid = models.ForeignKey('Supplier', on_delete= models.CASCADE, db_column='supplierid', blank=True, null=True)
-    purchaseid = models.ForeignKey('Purchase', on_delete= models.CASCADE, db_column='purchaseid', blank=True, null=True)
+    drugid = models.ForeignKey(Drug, models.DO_NOTHING, db_column='drugid', blank=True, null=True)
+    supplierid = models.ForeignKey('Supplier', models.DO_NOTHING, db_column='supplierid', blank=True, null=True)
+    purchaseid = models.ForeignKey('Purchase', models.DO_NOTHING, db_column='purchaseid', blank=True, null=True)
     batchnumber = models.CharField(max_length=255, blank=True, null=True)
     purchasedate = models.DateField(blank=True, null=True)
     expirydate = models.DateField(blank=True, null=True)
@@ -88,7 +88,7 @@ class Inventory(models.Model):
 
 class Login(models.Model):
     loginid = models.AutoField(primary_key=True)
-    userid = models.ForeignKey(Employee, on_delete= models.CASCADE, db_column='userid', blank=True, null=True)
+    userid = models.ForeignKey(Employee, models.DO_NOTHING, db_column='userid', blank=True, null=True)
     username = models.CharField(max_length=255, blank=True, null=True)
     password = models.CharField(max_length=255, blank=True, null=True)
 
@@ -99,8 +99,8 @@ class Login(models.Model):
 
 class Prescription(models.Model):
     prescriptionid = models.AutoField(primary_key=True)
-    customerid = models.ForeignKey(Customer, on_delete= models.CASCADE, db_column='customerid', blank=True, null=True)
-    drugid = models.ForeignKey(Drug, on_delete= models.CASCADE, db_column='drugid', blank=True, null=True)
+    customerid = models.ForeignKey(Customer, models.DO_NOTHING, db_column='customerid', blank=True, null=True)
+    drugid = models.ForeignKey(Drug, models.DO_NOTHING, db_column='drugid', blank=True, null=True)
     prescriptiondate = models.DateField(blank=True, null=True)
     prescriptionquantity = models.IntegerField(blank=True, null=True)
 
@@ -111,8 +111,8 @@ class Prescription(models.Model):
 
 class Purchase(models.Model):
     purchaseid = models.AutoField(primary_key=True)
-    drugid = models.ForeignKey(Drug, on_delete= models.CASCADE, db_column='drugid', blank=True, null=True)
-    supplierid = models.ForeignKey('Supplier', on_delete= models.CASCADE, db_column='supplierid', blank=True, null=True)
+    drugid = models.ForeignKey(Drug, models.DO_NOTHING, db_column='drugid', blank=True, null=True)
+    supplierid = models.ForeignKey('Supplier', models.DO_NOTHING, db_column='supplierid', blank=True, null=True)
     purchasedate = models.DateField(blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
     purchaseprice = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -124,7 +124,7 @@ class Purchase(models.Model):
 
 class Sales(models.Model):
     salesid = models.AutoField(primary_key=True)
-    drugid = models.ForeignKey(Drug, on_delete= models.CASCADE, db_column='drugid', blank=True, null=True)
+    drugid = models.ForeignKey(Drug, models.DO_NOTHING, db_column='drugid', blank=True, null=True)
     salesdate = models.DateField(blank=True, null=True)
     salesquantity = models.IntegerField(blank=True, null=True)
     salesprice = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)

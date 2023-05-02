@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-fv6hs4942_)eu=c2b%0g=*f2#&8^o!drjd%qwy&i25!nnf&ek2"
+SECRET_KEY = "django-insecure-m7ofbf52vvv_t-^s5#w5g1w-wpueot*sf2!0=^rim@4wd(y7cm"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "pharmacyapp",
+    "pharmacyapp"
 ]
 
 MIDDLEWARE = [
@@ -77,7 +77,7 @@ WSGI_APPLICATION = "pharmacy.wsgi.application"
 DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'database',
+        'NAME': 'pharmacy_ms',
         'USER': 'postgres',
         'PASSWORD': '',
         'HOST': '127.0.0.1',
