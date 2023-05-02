@@ -33,3 +33,4 @@ DATABASES = {
 - Then go to the address in your browser and add `admin\` in the url.
 - Now you should be able to see the [Login Window](./login_page2.png)
 
+### Note: EVERYTIME YOU MAKE ANY CHANGE IN DATABASE. BACKUP THE DATABASE AND UPLOAD THE NEW TARFILE.(DON'T REMOVE THE PREVIOUS ONE.)
