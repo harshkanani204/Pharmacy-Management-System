@@ -15,6 +15,9 @@ class Company(models.Model):
     companyphone = models.CharField(max_length=20, blank=True, null=True)
     companyemail = models.CharField(max_length=255, blank=True, null=True)
 
+    def __str__(self):
+        return f"{self.companyname}({self.companyid})"
+
     class Meta:
         # managed = False
         db_table = 'company'
@@ -28,6 +31,9 @@ class Customer(models.Model):
     phone = models.CharField(max_length=20, blank=True, null=True)
     email = models.CharField(max_length=255, blank=True, null=True)
 
+    def __str__(self):
+        return f"{self.firstname} {self.lastname}({self.customerid})"
+
     class Meta:
         # managed = False
         db_table = 'customer'
@@ -40,6 +46,9 @@ class Drug(models.Model):
     drugcategory = models.CharField(max_length=255, blank=True, null=True)
     companyid = models.ForeignKey(Company, models.DO_NOTHING, db_column='companyid', blank=True, null=True)
 
+    def __str__(self):
+        return f"{self.drugname}({self.drugid})"
+    
     class Meta:
         # managed = False
         db_table = 'drug'
@@ -117,6 +126,9 @@ class Purchase(models.Model):
     quantity = models.IntegerField(blank=True, null=True)
     purchaseprice = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
+    def __str__(self):
+        return f"{self.purchaseid}"
+
     class Meta:
         # managed = False
         db_table = 'purchase'
@@ -140,6 +152,9 @@ class Supplier(models.Model):
     supplieraddress = models.CharField(max_length=255, blank=True, null=True)
     supplierphone = models.CharField(max_length=20, blank=True, null=True)
     supplieremail = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.suppliername}({self.supplierid})"
 
     class Meta:
         # managed = False

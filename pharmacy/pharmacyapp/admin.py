@@ -42,3 +42,6 @@ class SupplierAdmin(admin.ModelAdmin):
     list_display = ("supplierid","suppliername","supplieraddress","supplierphone","supplieremail")
 admin.site.register(Supplier, SupplierAdmin)
 
+class InventoryAdmin(admin.ModelAdmin):
+    list_display = ("inventoryid","drugid", "supplierid", "purchaseid","batchnumber", "purchasedate", "expirydate", "quantity", "purchaseprice", "sellingprice")
+admin.site.register(Inventory, InventoryAdmin)
