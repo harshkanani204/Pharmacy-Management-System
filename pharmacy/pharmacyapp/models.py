@@ -10,7 +10,7 @@ from django.db import models
 
 class Company(models.Model):
     companyid = models.AutoField(primary_key=True)
-    companyname = models.CharField(max_length=255, blank=True, null=True)
+    companyname = models.CharField(max_length=255, blank=False, null=False)
     companyaddress = models.CharField(max_length=255, blank=True, null=True)
     companyphone = models.CharField(max_length=20, blank=True, null=True)
     companyemail = models.CharField(max_length=255, blank=True, null=True)
@@ -25,8 +25,8 @@ class Company(models.Model):
 
 class Customer(models.Model):
     customerid = models.AutoField(primary_key=True)
-    firstname = models.CharField(max_length=255, blank=True, null=True)
-    lastname = models.CharField(max_length=255, blank=True, null=True)
+    firstname = models.CharField(max_length=255, blank=False, null=False)
+    lastname = models.CharField(max_length=255, blank=False, null=False)
     address = models.CharField(max_length=255, blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     email = models.CharField(max_length=255, blank=True, null=True)
@@ -41,7 +41,7 @@ class Customer(models.Model):
 
 class Drug(models.Model):
     drugid = models.AutoField(primary_key=True)
-    drugname = models.CharField(max_length=255, blank=True, null=True)
+    drugname = models.CharField(max_length=255, blank=False, null=False)
     drugdescription = models.CharField(max_length=255, blank=True, null=True)
     drugcategory = models.CharField(max_length=255, blank=True, null=True)
     companyid = models.ForeignKey(Company, models.DO_NOTHING, db_column='companyid', blank=True, null=True)
@@ -56,8 +56,8 @@ class Drug(models.Model):
 
 class Drugexpiry(models.Model):
     drugexpiryid = models.AutoField(primary_key=True)
-    drugid = models.ForeignKey(Drug, models.DO_NOTHING, db_column='drugid', blank=True, null=True)
-    expirydate = models.DateField(blank=True, null=True)
+    drugid = models.ForeignKey(Drug, models.DO_NOTHING, db_column='drugid', blank=False, null=False)
+    expirydate = models.DateField(blank=False, null=False)
 
     class Meta:
         # managed = False
@@ -66,8 +66,8 @@ class Drugexpiry(models.Model):
 
 class Employee(models.Model):
     employeeid = models.AutoField(primary_key=True)
-    firstname = models.CharField(max_length=255, blank=True, null=True)
-    lastname = models.CharField(max_length=255, blank=True, null=True)
+    firstname = models.CharField(max_length=255, blank=False, null=False)
+    lastname = models.CharField(max_length=255, blank=False, null=False)
     address = models.CharField(max_length=255, blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     email = models.CharField(max_length=255, blank=True, null=True)
@@ -80,15 +80,15 @@ class Employee(models.Model):
 
 class Inventory(models.Model):
     inventoryid = models.AutoField(primary_key=True)
-    drugid = models.ForeignKey(Drug, models.DO_NOTHING, db_column='drugid', blank=True, null=True)
-    supplierid = models.ForeignKey('Supplier', models.DO_NOTHING, db_column='supplierid', blank=True, null=True)
-    purchaseid = models.ForeignKey('Purchase', models.DO_NOTHING, db_column='purchaseid', blank=True, null=True)
-    batchnumber = models.CharField(max_length=255, blank=True, null=True)
-    purchasedate = models.DateField(blank=True, null=True)
-    expirydate = models.DateField(blank=True, null=True)
-    quantity = models.IntegerField(blank=True, null=True)
-    purchaseprice = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    sellingprice = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    drugid = models.ForeignKey(Drug, models.DO_NOTHING, db_column='drugid', blank=False, null=False)
+    supplierid = models.ForeignKey('Supplier', models.DO_NOTHING, db_column='supplierid', blank=False, null=False)
+    purchaseid = models.ForeignKey('Purchase', models.DO_NOTHING, db_column='purchaseid', blank=False, null=False)
+    batchnumber = models.CharField(max_length=255, blank=False, null=False)
+    purchasedate = models.DateField(blank=False, null=False)
+    expirydate = models.DateField(blank=False, null=False)
+    quantity = models.IntegerField(blank=False, null=False)
+    purchaseprice = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=False)
+    sellingprice = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=False)
 
     class Meta:
         # managed = False
@@ -97,9 +97,9 @@ class Inventory(models.Model):
 
 class Login(models.Model):
     loginid = models.AutoField(primary_key=True)
-    userid = models.ForeignKey(Employee, models.DO_NOTHING, db_column='userid', blank=True, null=True)
-    username = models.CharField(max_length=255, blank=True, null=True)
-    password = models.CharField(max_length=255, blank=True, null=True)
+    userid = models.ForeignKey(Employee, models.DO_NOTHING, db_column='userid', blank=False, null=False)
+    username = models.CharField(max_length=255, blank=False, null=False)
+    password = models.CharField(max_length=255, blank=False, null=False)
 
     class Meta:
         # managed = False
@@ -108,10 +108,10 @@ class Login(models.Model):
 
 class Prescription(models.Model):
     prescriptionid = models.AutoField(primary_key=True)
-    customerid = models.ForeignKey(Customer, models.DO_NOTHING, db_column='customerid', blank=True, null=True)
-    drugid = models.ForeignKey(Drug, models.DO_NOTHING, db_column='drugid', blank=True, null=True)
-    prescriptiondate = models.DateField(blank=True, null=True)
-    prescriptionquantity = models.IntegerField(blank=True, null=True)
+    customerid = models.ForeignKey(Customer, models.DO_NOTHING, db_column='customerid', blank=False, null=False)
+    drugid = models.ForeignKey(Drug, models.DO_NOTHING, db_column='drugid', blank=False, null=False)
+    prescriptiondate = models.DateField(blank=False, null=False)
+    prescriptionquantity = models.IntegerField(blank=False, null=False)
 
     class Meta:
         # managed = False
@@ -120,11 +120,11 @@ class Prescription(models.Model):
 
 class Purchase(models.Model):
     purchaseid = models.AutoField(primary_key=True)
-    drugid = models.ForeignKey(Drug, models.DO_NOTHING, db_column='drugid', blank=True, null=True)
-    supplierid = models.ForeignKey('Supplier', models.DO_NOTHING, db_column='supplierid', blank=True, null=True)
-    purchasedate = models.DateField(blank=True, null=True)
-    quantity = models.IntegerField(blank=True, null=True)
-    purchaseprice = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    drugid = models.ForeignKey(Drug, models.DO_NOTHING, db_column='drugid', blank=False, null=False)
+    supplierid = models.ForeignKey('Supplier', models.DO_NOTHING, db_column='supplierid', blank=False, null=False)
+    purchasedate = models.DateField(blank=False, null=False)
+    quantity = models.IntegerField(blank=False, null=False)
+    purchaseprice = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=False)
 
     def __str__(self):
         return f"{self.purchaseid}"
@@ -136,10 +136,10 @@ class Purchase(models.Model):
 
 class Sales(models.Model):
     salesid = models.AutoField(primary_key=True)
-    drugid = models.ForeignKey(Drug, models.DO_NOTHING, db_column='drugid', blank=True, null=True)
-    salesdate = models.DateField(blank=True, null=True)
-    salesquantity = models.IntegerField(blank=True, null=True)
-    salesprice = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    drugid = models.ForeignKey(Drug, models.DO_NOTHING, db_column='drugid', blank=False, null=False)
+    salesdate = models.DateField(blank=False, null=False)
+    salesquantity = models.IntegerField(blank=False, null=False)
+    salesprice = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=False)
 
     class Meta:
         # managed = False
@@ -148,7 +148,7 @@ class Sales(models.Model):
 
 class Supplier(models.Model):
     supplierid = models.AutoField(primary_key=True)
-    suppliername = models.CharField(max_length=255, blank=True, null=True)
+    suppliername = models.CharField(max_length=255, blank=False, null=False)
     supplieraddress = models.CharField(max_length=255, blank=True, null=True)
     supplierphone = models.CharField(max_length=20, blank=True, null=True)
     supplieremail = models.CharField(max_length=255, blank=True, null=True)
