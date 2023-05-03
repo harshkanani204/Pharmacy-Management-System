@@ -5,32 +5,27 @@
 Whenever someone tries a purchase it'll first check the inventory and see if that drug is available. If it is available then only it'll insert that data into Sales table. and After inserting into the sales table it'll also update the inventory by substracting that quantity.
 
 - Case a) There is sufficient quantity available.
-    - [Inventory Table Before](./images/trigger11.png)
-    - [Inventory Table After](./images/trigger12.png)
-    - [Sales Table after](./images/trigger13.png)
+    - [Inventory Table Before](./images/trigger11-inventory.png)
+    - [Inventory Table After](./images/trigger12-inventory.png)
+    - [Sales Table after](./images/trigger13-sales.png)
 
 - Case b) There isn't sufficient quantity available.
-    - [Inventory Table Before](./images/trigger12.png)
-    - [Error Message](./images/trigger14.png)
-    - [Inventory Table after](./images/trigger15.png)
-    - [Sales Table after](./images/trigger13.png)
+    - [Error Message](./images/trigger14-error.png)
 
 ```sql
+
 CREATE OR REPLACE FUNCTION check_inventory() RETURNS TRIGGER AS $$
 DECLARE
-    inventory_qty INTEGER;
+    drug_quantity INTEGER;
 BEGIN
-    SELECT SUM(Quantity) INTO inventory_qty FROM Inventory 
-    WHERE DrugID = NEW.DrugID AND ExpiryDate >= CURRENT_DATE;
+    SELECT quantity INTO drug_quantity
+    FROM inventory
+    WHERE inventory.drugid = NEW.drugid AND inventory.purchaseid = NEW.purchaseid;
     
-    IF inventory_qty >= NEW.SalesQuantity THEN
-        UPDATE Inventory SET Quantity = Quantity - NEW.SalesQuantity 
-        WHERE InventoryID IN (
-            SELECT InventoryID FROM Inventory 
-            WHERE DrugID = NEW.DrugID AND ExpiryDate >= CURRENT_DATE 
-            ORDER BY ExpiryDate ASC 
-            LIMIT NEW.SalesQuantity
-        );
+    IF drug_quantity >= NEW.salesquantity THEN
+        UPDATE inventory
+        SET quantity = quantity - NEW.salesquantity
+        WHERE inventory.drugid = NEW.drugid AND inventory.purchaseid = NEW.purchaseid;
         RETURN NEW;
     ELSE
         RAISE EXCEPTION 'Insufficient inventory for this sale.';
@@ -38,9 +33,15 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER sales_trigger BEFORE INSERT ON Sales FOR EACH ROW EXECUTE FUNCTION check_inventory();
+CREATE TRIGGER check_inventory_trigger
+BEFORE INSERT ON sales
+FOR EACH ROW
+EXECUTE FUNCTION check_inventory();
+
+INSERT INTO sales (drugid,purchaseid,salesdate,salesquantity,salesprice,customerid) VALUES(3,3,'2023-06-07',20,49.99,2)
+
 ```
-Remark: It'll update all the entries with that drug id.
+Remark: Done.
 
 
 ### 2. While Making a Purchase
@@ -65,47 +66,97 @@ AFTER INSERT ON Purchase
 FOR EACH ROW
 EXECUTE FUNCTION add_to_inventory();
 ```
-Remark: Working great.
+Remark: Done.
 
-### 3. While adding a prescription.
+### 3. Low stock Trigger
+a trigger that alerts the administrator if the inventory level of any drug falls below a certain threshold. 
 
-When we add a prescription. It'll create a sale i.e. insert into sale table. and after that it'll also update inventory table.
-
-- Case a) When there is enough drug available.
-    - [Prescription Table Before](./images/Trigger32-prescription.png)
-    - [Inventory Table Before](./images/Trigger31-inventory.png)
-    - [Sales Table Before](./images/Trigger33-sales.png)
-
-    - [Prescription Table After](./images/Trigger34-prescription.png)
-    - [Inventory Table After](./images/Trigger36-inventory.png)
-    - [Sales Table After](./images/Trigger35-sales.png)
-- Case b) When there isn't sufficient drug available.
-    - [Error Message](./images/Trigger37.png)
+- [Info Message](./images/Trigger3.png)
 
 ```sql
-
-CREATE OR REPLACE FUNCTION add_sales_from_prescription()
-RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION less_drugs() RETURNS trigger AS $$
+DECLARE
+    drug_id integer;
+    drug_name text;
+    current_quantity integer;
+    min_quantity integer;
 BEGIN
-  INSERT INTO Sales (DrugID, PurchaseID, SalesDate, SalesQuantity, SalesPrice)
-  SELECT NEW.DrugID, p.PurchaseID, CURRENT_DATE, NEW.PrescriptionQuantity, i.SellingPrice
-  FROM Purchase p
-  JOIN Inventory i ON i.PurchaseID = p.PurchaseID
-  WHERE p.DrugID = NEW.DrugID
-    AND p.PurchaseDate = (
-      SELECT MIN(PurchaseDate)
-      FROM Purchase
-      WHERE DrugID = p.DrugID
-    )
-  ORDER BY i.ExpiryDate ASC, i.PurchaseDate ASC
-  LIMIT NEW.PrescriptionQuantity;
-  RETURN NEW;
+    SELECT NEW.drugid, drug.drugname, inventory.quantity, 50 INTO drug_id, drug_name, current_quantity, min_quantity FROM inventory JOIN drug ON inventory.drugid = drug.drugid WHERE inventory.drugid = NEW.drugid;
+
+    IF current_quantity - NEW.salesquantity < min_quantity THEN
+		RAISE INFO 'Inventory level for % (%), has fallen below the minimum threshold of %.', drug_name, drug_id, min_quantity;
+	
+	END IF;
+
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER add_sales_from_prescription_trigger
-AFTER INSERT ON Prescription
+CREATE TRIGGER inventory_threshold_trigger
+AFTER INSERT ON sales
 FOR EACH ROW
-EXECUTE FUNCTION add_sales_from_prescription();
+EXECUTE FUNCTION less_drugs();
 ```
-Remark: Working fine.
+
+
+## Views:
+
+### 1. View to see all the available drugs.
+
+```sql
+CREATE VIEW unique_drugs AS
+SELECT DISTINCT ON (drug.drugid, drug.drugname)
+       drug.drugid,
+       drug.drugname
+FROM inventory
+INNER JOIN drug ON inventory.drugid = drug.drugid
+WHERE inventory.quantity > 0;
+```
+
+
+### 2. View to see most sold drugs.
+
+```sql
+CREATE VIEW most_sold_drugs AS
+SELECT s.drugid, i.drugname, SUM(s.salesquantity) as total_sales
+FROM sales s
+INNER JOIN drug i ON s.drugid = i.drugid
+GROUP BY s.drugid, i.drugname
+ORDER BY total_sales DESC;
+```
+
+### 3. View to see the most frequent customers.
+
+```sql
+CREATE VIEW most_regular_customer AS
+SELECT customer.customerid, customer.firstname||' '||customer.lastname, COUNT(sales.salesid) AS num_purchases
+FROM customer
+JOIN sales ON customer.customerid = sales.customerid
+GROUP BY customer.customerid, customer.firstname||' '||customer.lastname
+ORDER BY num_purchases DESC;
+```
+
+### Roles:
+
+1. Salesperson: This role has the ability to select, insert, and update data in the sales and prescription tables.
+
+```sql
+CREATE ROLE salesperson;
+GRANT SELECT, INSERT, UPDATE ON sales TO salesperson;
+GRANT SELECT, INSERT, UPDATE ON prescription TO salesperson;
+```
+
+2. Inventory Manager: This role has the ability to select, insert, and update data in the inventory and purchase tables.
+
+```sql
+CREATE ROLE inventory_manager;
+GRANT SELECT, INSERT, UPDATE ON inventory TO inventory_manager;
+GRANT SELECT, INSERT, UPDATE ON purchase TO inventory_manager;
+```
+
+3. Administrator: This role has the ability to manage all aspects of the database, including creating tables, creating views, and granting privileges to other roles.
+
+```sql
+CREATE ROLE administrator;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO administrator;
+```
