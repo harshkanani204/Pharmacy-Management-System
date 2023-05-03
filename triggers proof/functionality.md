@@ -65,3 +65,44 @@ FOR EACH ROW
 EXECUTE FUNCTION add_to_inventory();
 ```
 
+### 3. While adding a prescription.
+
+When we add a prescription. It'll create a sale i.e. insert into sale table. and after that it'll also update inventory table.
+
+- Case a) When there is enough drug available.
+    - [Prescription Table Before](./images/Trigger32-prescription.png)
+    - [Inventory Table Before](./images/Trigger31-inventory.png)
+    - [Sales Table Before](./images/Trigger33-sales.png)
+
+    - [Prescription Table After](./images/Trigger34-prescription.png)
+    - [Inventory Table After](./images/Trigger36-inventory.png)
+    - [Sales Table After](./images/Trigger35-sales.png)
+- Case b) When there isn't sufficient drug available.
+    - [Error Message](./images/Trigger37.png)
+
+```sql
+
+CREATE OR REPLACE FUNCTION add_sales_from_prescription()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO Sales (DrugID, PurchaseID, SalesDate, SalesQuantity, SalesPrice)
+  SELECT NEW.DrugID, p.PurchaseID, CURRENT_DATE, NEW.PrescriptionQuantity, i.SellingPrice
+  FROM Purchase p
+  JOIN Inventory i ON i.PurchaseID = p.PurchaseID
+  WHERE p.DrugID = NEW.DrugID
+    AND p.PurchaseDate = (
+      SELECT MIN(PurchaseDate)
+      FROM Purchase
+      WHERE DrugID = p.DrugID
+    )
+  ORDER BY i.ExpiryDate ASC, i.PurchaseDate ASC
+  LIMIT NEW.PrescriptionQuantity;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER add_sales_from_prescription_trigger
+AFTER INSERT ON Prescription
+FOR EACH ROW
+EXECUTE FUNCTION add_sales_from_prescription();
+```
