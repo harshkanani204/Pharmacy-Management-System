@@ -40,6 +40,7 @@ $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER sales_trigger BEFORE INSERT ON Sales FOR EACH ROW EXECUTE FUNCTION check_inventory();
 ```
+Remark: It'll update all the entries with that drug id.
 
 
 ### 2. While Making a Purchase
@@ -64,6 +65,7 @@ AFTER INSERT ON Purchase
 FOR EACH ROW
 EXECUTE FUNCTION add_to_inventory();
 ```
+Remark: Working great.
 
 ### 3. While adding a prescription.
 
@@ -106,3 +108,4 @@ AFTER INSERT ON Prescription
 FOR EACH ROW
 EXECUTE FUNCTION add_sales_from_prescription();
 ```
+Remark: Working fine.
