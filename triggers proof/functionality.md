@@ -1,6 +1,6 @@
 ## **Triggers:**
 
-### 1. While Making a Sale 
+### **1. While Making a Sale**
 
 Whenever someone tries a purchase it'll first check the inventory and see if that drug is available. If it is available then only it'll insert that data into Sales table. and After inserting into the sales table it'll also update the inventory by substracting that quantity.
 
@@ -44,7 +44,7 @@ INSERT INTO sales (drugid,purchaseid,salesdate,salesquantity,salesprice,customer
 Remark: Done.
 
 
-### 2. While Making a Purchase
+### **2. While Making a Purchase**
 Whenever we make a purchase we add that thing into the inventory. with the relevant values.
 
 - [Purchase Table Before](./images/Trigger22-purchase.png)
@@ -68,7 +68,7 @@ EXECUTE FUNCTION add_to_inventory();
 ```
 Remark: Done.
 
-### 3. Low stock Trigger
+### **3. Low stock Trigger**
 a trigger that alerts the administrator if the inventory level of any drug falls below a certain threshold. 
 
 - [Info Message](./images/Trigger3.png)
@@ -98,10 +98,33 @@ FOR EACH ROW
 EXECUTE FUNCTION less_drugs();
 ```
 
+### 4. **Delete from sales Trigger.**
+Whenever someone returns a medicine a sale is deleted and the quantity will be updated in the inventory table.
+    - [Sales Before](./images/trigger41-sales.png)
+    - [Inventory Before](./images/trigger42-sales.png)
+    - [Sales After](./images/trigger43-inventory.png)
+    - [Inventory After](./images/trigger44-inventory.png)
+```sql
+CREATE OR REPLACE FUNCTION increase_inventory()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE inventory
+    SET quantity = quantity + OLD.salesquantity
+    WHERE drugid = OLD.drugid AND purchaseid = OLD.purchaseid;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
 
-## Views:
+CREATE TRIGGER increase_inventory_trigger
+AFTER DELETE ON sales
+FOR EACH ROW
+EXECUTE FUNCTION increase_inventory();
+```
+<hr>
 
-### 1. View to see all the available drugs.
+## **Views:**
+
+### **1. View to see all the available drugs.**
 
 ```sql
 CREATE VIEW unique_drugs AS
@@ -113,8 +136,7 @@ INNER JOIN drug ON inventory.drugid = drug.drugid
 WHERE inventory.quantity > 0;
 ```
 
-
-### 2. View to see most sold drugs.
+### **2. View to see most sold drugs.**
 
 ```sql
 CREATE VIEW most_sold_drugs AS
@@ -125,7 +147,7 @@ GROUP BY s.drugid, i.drugname
 ORDER BY total_sales DESC;
 ```
 
-### 3. View to see the most frequent customers.
+### **3. View to see the most frequent customers.**
 
 ```sql
 CREATE VIEW most_regular_customer AS
@@ -136,27 +158,40 @@ GROUP BY customer.customerid, customer.firstname||' '||customer.lastname
 ORDER BY num_purchases DESC;
 ```
 
-### Roles:
+<hr>
 
-1. Salesperson: This role has the ability to select, insert, and update data in the sales and prescription tables.
+### **Roles:**
+
+**1. Salesperson: This role has the ability to select, insert, and update data in the sales and prescription tables.**
 
 ```sql
-CREATE ROLE salesperson;
-GRANT SELECT, INSERT, UPDATE ON sales TO salesperson;
-GRANT SELECT, INSERT, UPDATE ON prescription TO salesperson;
+CREATE ROLE salesperson LOGIN PASSWORD 'salesperson';
+GRANT SELECT, INSERT, DELETE, UPDATE ON inventory TO salesperson;
+GRANT SELECT, INSERT, DELETE, UPDATE ON customer TO salesperson;
+GRANT SELECT, INSERT, DELETE, UPDATE ON sales TO salesperson;
+GRANT SELECT, INSERT, DELETE, UPDATE ON prescription TO salesperson;
 ```
 
-2. Inventory Manager: This role has the ability to select, insert, and update data in the inventory and purchase tables.
+**2. Inventory Manager: This role has the ability to select, insert, and update data in the inventory and purchase tables.**
 
 ```sql
-CREATE ROLE inventory_manager;
-GRANT SELECT, INSERT, UPDATE ON inventory TO inventory_manager;
-GRANT SELECT, INSERT, UPDATE ON purchase TO inventory_manager;
+CREATE ROLE inventory_manager LOGIN PASSWORD 'inventory_manager';
+GRANT SELECT, INSERT, DELETE, UPDATE ON inventory TO inventory_manager;
+GRANT SELECT, INSERT, DELETE, UPDATE ON company TO inventory_manager;
+GRANT SELECT, INSERT, DELETE, UPDATE ON drug TO inventory_manager;
+GRANT SELECT, INSERT, DELETE, UPDATE ON purchase TO inventory_manager;
+GRANT SELECT, INSERT, DELETE, UPDATE ON supplier TO inventory_manager;
 ```
-
-3. Administrator: This role has the ability to manage all aspects of the database, including creating tables, creating views, and granting privileges to other roles.
+**3. Administrator: This role has the ability to manage all aspects of the database, including creating tables, creating views, and granting privileges to other roles.**
 
 ```sql
-CREATE ROLE administrator;
+CREATE ROLE administrator LOGIN PASSWORD 'administrator';
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO administrator;
+```
+
+**4. Manager: Can edit all the tables.**
+
+```sql
+CREATE ROLE manager LOGIN PASSWORD 'manager';
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO manager;
 ```
