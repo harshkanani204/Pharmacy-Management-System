@@ -41,6 +41,8 @@ EXECUTE FUNCTION check_inventory();
 INSERT INTO sales (drugid,purchaseid,salesdate,salesquantity,salesprice,customerid) VALUES(3,3,'2023-06-07',20,49.99,2)
 
 ```
+Remark: Done.
+
 
 ### **2. While Making a Purchase**
 Whenever we make a purchase we add that thing into the inventory. with the relevant values.
@@ -64,6 +66,7 @@ AFTER INSERT ON Purchase
 FOR EACH ROW
 EXECUTE FUNCTION add_to_inventory();
 ```
+Remark: Done.
 
 ### **3. Low stock Trigger**
 a trigger that alerts the administrator if the inventory level of any drug falls below a certain threshold. 
@@ -193,60 +196,74 @@ CREATE ROLE manager LOGIN PASSWORD 'manager';
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO manager;
 ```
 
-<hr>
-
-### **Functions**
+## **Functions** 
 
 **1. To get count of drugs by company ID:**
 ```sql
-CREATE FUNCTION count_drugs_by_company(company_id INT)
-RETURNS INT AS $$
-BEGIN
-RETURN COUNT(*)
-FROM Drug WHERE CompanyID = company_id;
-END; $$ LANGUAGE plpgsql
+    CREATE FUNCTION count_drugs_by_company(company_id INT)
+    RETURNS INT AS $$
+    BEGIN
+    RETURN COUNT(*)
+    FROM Drug WHERE CompanyID = company_id;
+    END; $$ LANGUAGE plpgsql
 ```
+[function1](./images/f1.png)
 
-**2. To increase selling price by percentage:**
+To increase selling price by percentage:
 ```sql
-CREATE FUNCTION increase_selling_price(percentage INT)
-RETURNS VOID AS $$
-BEGIN
-UPDATE Inventory SET SellingPrice = SellingPrice * (1 + (percentage/100.0));
-END; $$ LANGUAGE plpgsql;
+    CREATE FUNCTION increase_selling_price(percentage INT)
+    RETURNS VOID AS $$
+    BEGIN
+    UPDATE Inventory SET SellingPrice = SellingPrice * (1 + (percentage/100.0));
+    END; $$ LANGUAGE plpgsql;
+    lets take this function
 ```
+[function2](./images/f2.png)
 
-
-**3. To remove expired drugs:**
+**2.To remove expired drugs:**
 ```sql
-CREATE FUNCTION remove_expired_drugs()
-RETURNS VOID AS $$
-BEGIN
-DELETE FROM Inventory WHERE ExpiryDate < NOW();
-END; $$ LANGUAGE plpgsql;
+    CREATE FUNCTION remove_expired_drugs()
+    RETURNS VOID AS $$
+    BEGIN
+    DELETE FROM Inventory WHERE ExpiryDate < NOW();
+    END; $$ LANGUAGE plpgsql;
 ```
+[function3](./images/f3.png)
 
-**4. A function to get top n drugs by sales revenue:**
-```sql
-CREATE FUNCTION top_n_drugs(top_count INT)
-RETURNS TABLE (drug_id INT, drug_name VARCHAR, sales_revenue DECIMAL) AS $$
-SELECT drug.DrugID, DrugName, SUM(SalesPrice * SalesQuantity) AS sales_revenue
-FROM Sales JOIN Drug ON Sales.DrugID = Drug.DrugID
-GROUP BY drug.DrugID, DrugName
-ORDER BY sales_revenue DESC
-LIMIT top_count;
-$$ LANGUAGE sql;
-```
-
-**5. A function to get top n suppliers by total purchase cost:**
+**3.To get details about a drug:**
 
 ```sql
-CREATE FUNCTION top_n_suppliers(top_count INT)
-RETURNS TABLE (supplier_id INT, supplier_name VARCHAR, total_cost DECIMAL) AS $$
-SELECT supplier.SupplierID, SupplierName, SUM(PurchasePrice * Quantity) AS total_cost
-FROM Purchase JOIN Supplier ON Purchase.SupplierID = Supplier.SupplierID
-GROUP BY supplier.SupplierID, SupplierName
-ORDER BY total_cost DESC
-LIMIT top_count;
-$$ LANGUAGE sql;
+    CREATE FUNCTION get_drug_details(drug_id INT)
+    RETURNS TABLE (drug_name VARCHAR, batch_num VARCHAR, expiry_date DATE) AS $$
+    SELECT DrugName, BatchNumber, ExpiryDate
+    FROM Drug JOIN Inventory ON Drug.DrugID = Inventory.DrugID
+    WHERE Drug.DrugID = $1;
+    $$ LANGUAGE sql;
 ```
+[function4](./images/f4.png)
+
+**4.A function to get top n drugs by sales revenue:**
+```sql
+    CREATE FUNCTION top_n_drugs(top_count INT)
+    RETURNS TABLE (drug_id INT, drug_name VARCHAR, sales_revenue DECIMAL) AS $$
+    SELECT drug.DrugID, DrugName, SUM(SalesPrice * SalesQuantity) AS sales_revenue
+    FROM Sales JOIN Drug ON Sales.DrugID = Drug.DrugID
+    GROUP BY drug.DrugID, DrugName
+    ORDER BY sales_revenue DESC
+    LIMIT top_count;
+    $$ LANGUAGE sql;
+```
+[function5](./images/f5.png)
+
+**5.A function to get top n suppliers by total purchase cost:**
+```sql
+    CREATE FUNCTION top_n_suppliers(top_count INT)
+    RETURNS TABLE (supplier_id INT, supplier_name VARCHAR, total_cost DECIMAL) AS $$
+    SELECT supplier.SupplierID, SupplierName, SUM(PurchasePrice * Quantity) AS total_cost
+    FROM Purchase JOIN Supplier ON Purchase.SupplierID = Supplier.SupplierID
+    GROUP BY supplier.SupplierID, SupplierName
+    ORDER BY total_cost DESC
+    LIMIT top_count;
+    $$ LANGUAGE sql;
+```
+[function6](./images/f6.png)
