@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Drugs Table</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+		.container {
+			max-width: 800px;
+			margin: 0 auto;
+			padding: 20px;
+		}
+		nav {
+			background-color: #333;
+			color: #fff;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 20px;
+		}
+		nav a {
+			color: #fff;
+			text-decoration: none;
+			margin: 0 10px;
+			font-size: 20px;
+			font-weight: bold;
+			transition: color 0.2s ease-in-out;
+		}
+		nav a:hover {
+			color: #F08080;
+		}
+		h1 {
+			margin-top: 40px;
+			margin-bottom: 20px;
+			font-size: 36px;
+			font-weight: bold;
+			text-align: center;
+		}
+		table {
+			border-collapse: collapse;
+			width: 100%;
+			margin-bottom: 40px;
+		}
+		th, td {
+			text-align: center;
+			padding: 12px;
+			border: 1px solid #ddd;
+			font-size: 16px;
+		}
+		th {
+			background-color: #333;
+			color: #fff;
+		}
+		tr:nth-child(even) {
+			background-color: #f2f2f2;
+			transition: background-color 0.2s ease-in-out;
+		}
+		tr:hover {
+            background-color: #ddd;
+			color: #0;
+		}
+	</style>
+</head>
+<body>
+	<nav>
+		<a href="{% url 'home' %}">Home</a>
+		<a href="{% url 'tables' %}">Tables</a>
+		<a href="{% url 'views' %}">Views</a>
+		{% comment %} <a href="{% url 'functions' %}">Functions</a> {% endcomment %}
+	</nav>
+	<div class="container">
+		<h1>Drugs</h1>
+
+
+		<input type="text" id="search-companies" placeholder="Search...">
+		<table>
+			<thead>
+				<tr>
+					<th>Drug ID</th>
+					<th> Name</th>
+					<th>Description</th>
+					<th>Category</th>
+                    <th>Company ID</th>
+				</tr>
+			</thead>
+			<tbody id="companies-list">
+				{% for x in drugs %}
+				<tr>
+					<td>{{ x.drugid }}</td>
+					<td>{{ x.drugname }}</td>
+                    <td>{{ x.drugdescription }}</td>
+                    <td>{{ x.drugcategory }}</td>
+                    <td>{{ x.companyid_id }}</td>
+                    
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+  <!-- Include your custom JavaScript file -->
+  <script>
+  $(document).ready(function(){
+    $('#search-companies').on('keyup', function(){
+      var search_value = $(this).val().toLowerCase();
+      $('tbody#companies-list tr').each(function(){
+        var actor_name = $(this).text().toLowerCase();
+        if(actor_name.indexOf(search_value) !== -1){
+          $(this).show();
+        }
+        else{
+          $(this).hide();
+        }
+      });
+    });
+  });
+</script> 
+</body>
+</html>

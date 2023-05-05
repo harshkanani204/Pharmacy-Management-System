@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Views</title>
+	<style>
+		body {
+			background-color: #f2f2f2;
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+		}
+		nav {
+			background-color: #333;
+			color: #fff;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 20px;
+		}
+		nav a {
+			color: #fff;
+			text-decoration: none;
+			margin: 0 10px;
+			font-size: 20px;
+			font-weight: bold;
+			transition: color 0.2s ease-in-out;
+		}
+		nav a:hover {
+			color: #F08080;
+		}
+		h1 {
+			font-size: 3rem;
+			margin-bottom: 1rem;
+			text-align: center;
+			color: #333;
+		}
+
+		.btn {
+			display: inline-block;
+			padding: 0.75rem 2rem;
+			font-size: 1.5rem;
+			border-radius: 1rem;
+			background-color: #333;
+			color: #fff;
+			text-decoration: none;
+			margin: 1rem;
+			transition: background-color 0.2s ease-in-out;
+		}
+
+		.btn:hover {
+			background-color: #666;
+		}
+
+		.btn:focus {
+			outline: none;
+			box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
+		}
+	</style>
+</head>
+<body>
+	<nav>
+		<a href="{% url 'home' %}">Home</a>
+		<a href="{% url 'tables' %}">Tables</a>
+		<a href="{% url 'views' %}">Views</a>
+		{% comment %} <a href="{% url 'functions' %}">Functions</a> {% endcomment %}
+	</nav>
+	<div class="container">
+		<h1>Views</h1>
+		<a href="{% url 'most_sold_drugs' %}" class="btn">Most Sold Drugs</a>
+		<a href="{% url 'most_regular_customer' %}" class="btn">Most Regular Customers</a>
+		<a href="{% url 'unique_drugs' %}" class="btn">Available Drugs</a>
+	</div>
+</body>
+</html>

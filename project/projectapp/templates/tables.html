@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Views</title>
+	<style>
+		body {
+			background-color: #f2f2f2;
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+		}
+		nav {
+			background-color: #333;
+			color: #fff;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 20px;
+		}
+		nav a {
+			color: #fff;
+			text-decoration: none;
+			margin: 0 10px;
+			font-size: 20px;
+			font-weight: bold;
+			transition: color 0.2s ease-in-out;
+		}
+		nav a:hover {
+			color: #F08080;
+		}
+		h1 {
+			font-size: 3rem;
+			margin-bottom: 1rem;
+			text-align: center;
+			color: #333;
+		}
+
+		.btn {
+			display: inline-block;
+			padding: 0.75rem 2rem;
+			font-size: 1.5rem;
+			border-radius: 1rem;
+			background-color: #333;
+			color: #fff;
+			text-decoration: none;
+			margin: 1rem;
+			transition: background-color 0.2s ease-in-out;
+		}
+
+		.btn:hover {
+			background-color: #666;
+		}
+
+		.btn:focus {
+			outline: none;
+			box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
+		}
+
+		.table-links {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			grid-gap: 1rem;
+			justify-items: center;
+		}
+	
+		.table-link {
+			display: flex;
+			justify-content: center;
+		}
+	</style>
+</head>
+<body>
+	<nav>
+		<a href="{% url 'home' %}">Home</a>
+		<a href="{% url 'tables' %}">Tables</a>
+		<a href="{% url 'views' %}">Views</a>
+		{% comment %} <a href="{% url 'functions' %}">Functions</a> {% endcomment %}
+	</nav>
+	<div class="container">
+		<h1>Database Tables</h1>
+		<div class="table-links">
+			<div class="table-link">
+				<a href="{% url 'company' %}" class="btn">Company</a>
+			</div>
+			<div class="table-link">
+				<a href="{% url 'customer' %}" class="btn">Customer</a>
+			</div>
+			<div class="table-link">
+				<a href="{% url 'drug' %}" class="btn">Drug</a>
+			</div>
+			<div class="table-link">
+				<a href="{% url 'employee' %}" class="btn">Employee</a>
+			</div>
+			<div class="table-link">
+				<a href="{% url 'inventory' %}" class="btn">Inventory</a>
+			</div>
+			<div class="table-link">
+				<a href="{% url 'prescription' %}" class="btn">Prescription</a>
+			</div>
+			<div class="table-link">
+				<a href="{% url 'purchase' %}" class="btn">Purchases</a>
+			</div>
+			<div class="table-link">
+				<a href="{% url 'sale' %}" class="btn">Sales</a>
+			</div>
+			<div class="table-link">
+				<a href="{% url 'supplier' %}" class="btn">Suppliers</a>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
